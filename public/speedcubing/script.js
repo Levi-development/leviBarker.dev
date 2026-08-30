@@ -1,3 +1,7 @@
+const status = document.getElementById("solveStatus");
+const tableBody = document.getElementById("solveTableBody");
+
+status.textContent = "Loading solves...";
 
 fetch("https://api.levibarker.dev/solves")
     .then(response => response.json())
@@ -33,4 +37,6 @@ fetch("https://api.levibarker.dev/solves")
 
             tableBody.appendChild(row);
         });
+
+        status.textContent = `Last updated: ${new Date().toLocaleTimeString("en-GB")}. Refresh to update again`;
     });
