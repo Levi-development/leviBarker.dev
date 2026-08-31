@@ -35,16 +35,19 @@ function loadSolves() {
                 const timeCell = document.createElement("td");
                 const timestampCell = document.createElement("td");
                 const scrambleCell = document.createElement("td");
+                const catagoryCell = document.createElement("td");
 
                 idCell.textContent = solve.id;
-                timeCell.textContent = solve.time.toFixed(3);
+                timeCell.textContent = solve.time;
                 timestampCell.textContent = formattedDate;
                 scrambleCell.textContent = solve.scramble;
+                catagoryCell.textContent = solve.catagory;
 
                 row.appendChild(idCell);
                 row.appendChild(timeCell);
                 row.appendChild(timestampCell);
                 row.appendChild(scrambleCell);
+                row.appendChild(catagoryCell);
 
                 tableBody.appendChild(row);
             });
