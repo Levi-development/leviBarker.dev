@@ -25,6 +25,42 @@ function loadSolves() {
 
                 const categorySolves = solves.filter(solve => solve.category === category);
 
+                const times = categorySolves.map(solve => solve.time);
+
+
+                new Chart(chartCanvas, {
+                    type: "line",
+                    data: {
+                        labels: categorySolves.map((_, index) => index + 1),
+                        datasets: [
+                            {
+                                label: "Solve Time",
+                                data: times
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Solve"
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: "Time (seconds)"
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+
+
                 const heading = document.createElement("h2");
                 heading.textContent = category;
 
@@ -97,6 +133,7 @@ function loadSolves() {
                 table.appendChild(tableBody);
 
                 solveTables.appendChild(heading);
+                solveTables.appendChild(chartCanvas);
                 solveTables.appendChild(table);
             });
 
