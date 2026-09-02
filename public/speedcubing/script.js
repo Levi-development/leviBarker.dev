@@ -66,10 +66,13 @@ function loadSolves() {
                     const timestampCell = document.createElement("td");
                     const scrambleCell = document.createElement("td");
 
+                    const moves = solve.scramble.split(" ");
+                    const shortScramble = moves.slice(0, 3).join(" ") + "...";
+
                     idCell.textContent = solve.id;
                     timeCell.textContent = solve.time;
                     timestampCell.textContent = formattedDate;
-                    scrambleCell.textContent = solve.scramble;
+                    scrambleCell.textContent = shortScramble;
 
                     row.appendChild(idCell);
                     row.appendChild(timeCell);
