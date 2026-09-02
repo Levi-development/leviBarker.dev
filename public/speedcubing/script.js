@@ -28,6 +28,8 @@ function loadSolves() {
                 const heading = document.createElement("h2");
                 heading.textContent = category;
 
+                const chartCanvas = document.createElement("canvas");
+
                 const table = document.createElement("table");
 
                 const tableHead = document.createElement("thead");
