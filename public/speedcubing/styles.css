@@ -1,3 +1,39 @@
-.scramble {
+#solveTables {
+    width: 100%;
+}
+
+#solveTables h2 {
+    margin-top: 35px;
+    margin-bottom: 10px;
+}
+
+#solveTables table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+#solveTables th,
+#solveTables td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+#solveTables th {
+    font-weight: bold;
+}
+
+#solveTables tbody tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+#solveTables tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+#solveTables .scramble {
     cursor: pointer;
+    max-width: 500px;
+    overflow-wrap: break-word;
 }
