@@ -27,6 +27,10 @@ function loadSolves() {
 
                 const times = categorySolves.map(solve => solve.time);
 
+                const heading = document.createElement("h2");
+                heading.textContent = category;
+
+                const chartCanvas = document.createElement("canvas");
 
                 new Chart(chartCanvas, {
                     type: "line",
@@ -58,13 +62,6 @@ function loadSolves() {
                         }
                     }
                 });
-
-
-
-                const heading = document.createElement("h2");
-                heading.textContent = category;
-
-                const chartCanvas = document.createElement("canvas");
 
                 const table = document.createElement("table");
 
