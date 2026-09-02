@@ -67,12 +67,22 @@ function loadSolves() {
                     const scrambleCell = document.createElement("td");
 
                     const moves = solve.scramble.split(" ");
-                    const shortScramble = moves.slice(0, 3).join(" ") + "...";
+                    const shortScramble = moves.slice(0, 4).join(" ") + "...";
 
                     idCell.textContent = solve.id;
                     timeCell.textContent = solve.time;
                     timestampCell.textContent = formattedDate;
                     scrambleCell.textContent = shortScramble;
+
+                    scrambleCell.classList.add("scramble");
+
+                    scrambleCell.addEventListener("click", () => {
+                        if (scrambleCell.textContent === shortScramble) {
+                            scrambleCell.textContent = solve.scramble;
+                        } else {
+                            scrambleCell.textContent = shortScramble;
+                        }
+                    });
 
                     row.appendChild(idCell);
                     row.appendChild(timeCell);
