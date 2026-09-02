@@ -47,7 +47,7 @@ function loadSolves() {
                 const tableBody = document.createElement("tbody");
 
                 categorySolves.forEach(solve => {
-                    
+
                     const row = document.createElement("tr");
 
                     const date = new Date(solve.timestamp);
@@ -77,8 +77,6 @@ function loadSolves() {
                     row.appendChild(scrambleCell);
 
                     tableBody.appendChild(row);
-                });
-
                 });
 
                 table.appendChild(tableBody);
