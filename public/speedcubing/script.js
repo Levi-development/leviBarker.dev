@@ -2,6 +2,15 @@ const status = document.getElementById("solveStatus");
 const solveTables = document.getElementById("solveTables");
 const refreshButton = document.getElementById("refreshButton");
 
+function calculateAverage(times) {
+    const sorted = [...times].sort((a, b) => a - b);
+
+    sorted.shift(); // Remove best
+    sorted.pop();   // Remove worst
+
+    return sorted.reduce((sum, time) => sum + time, 0) / sorted.length;
+}
+
 function loadSolves() {
     status.textContent = "Loading solves...";
     refreshButton.disabled = true;
@@ -26,6 +35,27 @@ function loadSolves() {
                 const categorySolves = solves.filter(solve => solve.category === category);
 
                 const times = categorySolves.map(solve => solve.time);
+                const ao5 = [];
+                const ao12 = [];
+
+                for (let i = 0; i < times.length; i++) {
+
+                    if (i >= 4) {
+                        ao5.push(
+                            calculateAverage(times.slice(i - 4, i + 1))
+                        );
+                    } else {
+                        ao5.push(null);
+                    }
+
+                    if (i >= 11) {
+                        ao12.push(
+                            calculateAverage(times.slice(i - 11, i + 1))
+                        );
+                    } else {
+                        ao12.push(null);
+                    }
+                }
 
                 const heading = document.createElement("h2");
                 heading.textContent = category;
@@ -38,8 +68,16 @@ function loadSolves() {
                         labels: categorySolves.map((_, index) => index + 1),
                         datasets: [
                             {
-                                label: "Solve Time",
+                                label: "Individual",
                                 data: times
+                            },
+                            {
+                                label: "Ao5",
+                                data: ao5
+                            },
+                            {
+                                label: "Ao12",
+                                data: ao12
                             }
                         ]
                     },
