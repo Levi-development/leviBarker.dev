@@ -61,7 +61,16 @@ function loadSolves() {
                     }
                 }
 
-                //Calculate PBs and latest for individual, AO5, and AO12
+                // Calculate PBs and latest for individual, AO5, and AO12
+
+                const latestIndividual = times.length > 0
+                    ? times[times.length - 1]
+                    : null;
+
+                const personalBest = times.length > 0
+                    ? Math.min(...times)
+                    : null;
+
                 const validAo5 = ao5.filter(time => time !== null);
 
                 const latestAo5 = validAo5.length > 0
