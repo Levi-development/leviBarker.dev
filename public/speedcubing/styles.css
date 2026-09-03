@@ -53,3 +53,18 @@ a {
     max-width: 500px;
     overflow-wrap: break-word;
 }
+
+
+.category-heading {
+    cursor: pointer;
+}
+
+.category-content {
+    max-height: 2000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.category-content.collapsed {
+    max-height: 0;
+}

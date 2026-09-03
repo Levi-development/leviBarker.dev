@@ -58,7 +58,21 @@ function loadSolves() {
                 }
 
                 const heading = document.createElement("h2");
-                heading.textContent = category;
+                heading.textContent = "▼ " + category;
+                heading.classList.add("category-heading");
+
+                const categoryContent = document.createElement("div");
+                categoryContent.classList.add("category-content");
+
+                heading.addEventListener("click", () => {
+                    categoryContent.classList.toggle("collapsed");
+
+                    if (categoryContent.classList.contains("collapsed")) {
+                        heading.textContent = "▶ " + category;
+                    } else {
+                        heading.textContent = "▼ " + category;
+                    }
+                });
 
                 const chartCanvas = document.createElement("canvas");
 
@@ -167,9 +181,11 @@ function loadSolves() {
 
                 table.appendChild(tableBody);
 
+                categoryContent.appendChild(chartCanvas);
+                categoryContent.appendChild(table);
+
                 solveTables.appendChild(heading);
-                solveTables.appendChild(chartCanvas);
-                solveTables.appendChild(table);
+                solveTables.appendChild(categoryContent);
             });
 
 
