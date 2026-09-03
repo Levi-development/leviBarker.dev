@@ -2,6 +2,8 @@ const status = document.getElementById("solveStatus");
 const solveTables = document.getElementById("solveTables");
 const refreshButton = document.getElementById("refreshButton");
 
+const dashboardGraphs = document.getElementById("dashboardGraphs");
+
 function calculateAverage(times) {
     const sorted = [...times].sort((a, b) => a - b);
 
@@ -17,6 +19,7 @@ function loadSolves() {
 
 
     solveTables.innerHTML = "";
+    dashboardGraphs.innerHTML = "";
 
     fetch("https://api.levibarker.dev/solves")
         .then(response => {
@@ -33,6 +36,7 @@ function loadSolves() {
             categories.forEach(category => {
 
                 const categorySolves = solves.filter(solve => solve.category === category);
+                const dashboardCanvas = document.createElement("canvas");
 
                 const times = categorySolves.map(solve => solve.time);
                 const ao5 = [];
@@ -57,12 +61,73 @@ function loadSolves() {
                     }
                 }
 
+                //Calculate PBs and latest for individual, AO5, and AO12
+                const validAo5 = ao5.filter(time => time !== null);
+
+                const latestAo5 = validAo5.length > 0
+                    ? validAo5[validAo5.length - 1]
+                    : null;
+
+                const bestAo5 = validAo5.length > 0
+                    ? Math.min(...validAo5)
+                    : null;
+
+                const validAo12 = ao12.filter(time => time !== null);
+
+                const latestAo12 = validAo12.length > 0
+                    ? validAo12[validAo12.length - 1]
+                    : null;
+
+                const bestAo12 = validAo12.length > 0
+                    ? Math.min(...validAo12)
+                    : null;
+
+
+                //This is for the dashboard
+                new Chart(dashboardCanvas, {
+                    type: "line",
+                    data: {
+                        labels: categorySolves.map((_, index) => index + 1),
+                        datasets: [
+                            {
+                                label: "Individual",
+                                data: times
+                            },
+                            {
+                                label: "Ao5",
+                                data: ao5
+                            },
+                            {
+                                label: "Ao12",
+                                data: ao12
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: false
+                            },
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
                 const heading = document.createElement("h2");
-                heading.textContent = "▼ " + category;
+                heading.textContent = "▶ " + category;
                 heading.classList.add("category-heading");
 
                 const categoryContent = document.createElement("div");
-                categoryContent.classList.add("category-content");
+                categoryContent.classList.add("category-content", "collapsed");
 
                 heading.addEventListener("click", () => {
                     categoryContent.classList.toggle("collapsed");
@@ -114,6 +179,35 @@ function loadSolves() {
                         }
                     }
                 });
+
+                const dashboardCard = document.createElement("div");
+                dashboardCard.classList.add("dashboard-card");
+
+                const dashboardHeading = document.createElement("h3");
+                dashboardHeading.textContent = category;
+
+                const stats = document.createElement("div");
+                stats.classList.add("dashboard-stats");
+
+                stats.innerHTML = `
+                    <h4>Individual</h4>
+                    <p>Latest: ${latestIndividual.toFixed(2)}</p>
+                    <p>PB: ${personalBest.toFixed(2)}</p>
+
+                    <h4>Ao5</h4>
+                    <p>Latest: ${latestAo5 !== null ? latestAo5.toFixed(2) : "—"}</p>
+                    <p>PB: ${bestAo5 !== null ? bestAo5.toFixed(2) : "—"}</p>
+
+                    <h4>Ao12</h4>
+                    <p>Latest: ${latestAo12 !== null ? latestAo12.toFixed(2) : "—"}</p>
+                    <p>PB: ${bestAo12 !== null ? bestAo12.toFixed(2) : "—"}</p>
+                `;
+
+                dashboardCard.appendChild(stats);
+                dashboardCard.appendChild(dashboardHeading);
+                dashboardCard.appendChild(dashboardCanvas);
+
+                dashboardGraphs.appendChild(dashboardCard);
 
                 const table = document.createElement("table");
 

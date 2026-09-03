@@ -68,3 +68,37 @@ a {
 .category-content.collapsed {
     max-height: 0;
 }
+
+#dashboardGraphs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.dashboard-card {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.dashboard-card canvas {
+    height: 200px !important;
+}
+
+.dashboard-card h3 {
+    margin-top: 0;
+}
+
+.dashboard-stats h4 {
+    margin-bottom: 5px;
+}
+
+.dashboard-stats p {
+    margin: 3px 0;
+}
+
+@media (max-width: 800px) {
+    #dashboardGraphs {
+        grid-template-columns: 1fr;
+    }
+}
