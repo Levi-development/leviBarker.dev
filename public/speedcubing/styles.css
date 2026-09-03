@@ -76,25 +76,44 @@ a {
 }
 
 .dashboard-card {
-    padding: 20px;
+    padding: 15px;
     border: 1px solid #ccc;
     border-radius: 8px;
 }
 
+.dashboard-card h3 {
+    margin: 0 0 10px 0;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap: 5px 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.stats-header,
+.stats-row {
+    display: contents;
+}
+
+.stats-header span {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.stats-row span:first-child {
+    font-weight: bold;
+}
+
+.stats-row span:not(:first-child) {
+    text-align: center;
+}
+
 .dashboard-card canvas {
     height: 200px !important;
-}
-
-.dashboard-card h3 {
-    margin-top: 0;
-}
-
-.dashboard-stats h4 {
-    margin-bottom: 5px;
-}
-
-.dashboard-stats p {
-    margin: 3px 0;
 }
 
 @media (max-width: 800px) {

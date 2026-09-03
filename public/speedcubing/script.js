@@ -100,15 +100,21 @@ function loadSolves() {
                         datasets: [
                             {
                                 label: "Individual",
-                                data: times
+                                data: times,
+                                pointRadius: 0,
+                                pointHoverRadius: 4
                             },
                             {
                                 label: "Ao5",
-                                data: ao5
+                                data: ao5,
+                                pointRadius: 0,
+                                pointHoverRadius: 4
                             },
                             {
                                 label: "Ao12",
-                                data: ao12
+                                data: ao12,
+                                pointRadius: 0,
+                                pointHoverRadius: 4
                             }
                         ]
                     },
@@ -199,21 +205,33 @@ function loadSolves() {
                 stats.classList.add("dashboard-stats");
 
                 stats.innerHTML = `
-                    <h4>Individual</h4>
-                    <p>Latest: ${latestIndividual.toFixed(2)}</p>
-                    <p>PB: ${personalBest.toFixed(2)}</p>
+                    <div class="stats-header">
+                        <span></span>
+                        <span>Most Recent</span>
+                        <span>PB</span>
+                    </div>
 
-                    <h4>Ao5</h4>
-                    <p>Latest: ${latestAo5 !== null ? latestAo5.toFixed(2) : "—"}</p>
-                    <p>PB: ${bestAo5 !== null ? bestAo5.toFixed(2) : "—"}</p>
+                    <div class="stats-row">
+                        <span>Individual</span>
+                        <span>${latestIndividual !== null ? latestIndividual.toFixed(2) : "—"}</span>
+                        <span>${personalBest !== null ? personalBest.toFixed(2) : "—"}</span>
+                    </div>
 
-                    <h4>Ao12</h4>
-                    <p>Latest: ${latestAo12 !== null ? latestAo12.toFixed(2) : "—"}</p>
-                    <p>PB: ${bestAo12 !== null ? bestAo12.toFixed(2) : "—"}</p>
+                    <div class="stats-row">
+                        <span>AO5</span>
+                        <span>${latestAo5 !== null ? latestAo5.toFixed(2) : "—"}</span>
+                        <span>${bestAo5 !== null ? bestAo5.toFixed(2) : "—"}</span>
+                    </div>
+
+                    <div class="stats-row">
+                        <span>AO12</span>
+                        <span>${latestAo12 !== null ? latestAo12.toFixed(2) : "—"}</span>
+                        <span>${bestAo12 !== null ? bestAo12.toFixed(2) : "—"}</span>
+                    </div>
                 `;
 
-                dashboardCard.appendChild(stats);
                 dashboardCard.appendChild(dashboardHeading);
+                dashboardCard.appendChild(stats);
                 dashboardCard.appendChild(dashboardCanvas);
 
                 dashboardGraphs.appendChild(dashboardCard);
