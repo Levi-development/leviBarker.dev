@@ -22,16 +22,119 @@ function loadSolves() {
     dashboardGraphs.innerHTML = "";
 
     fetch("https://api.levibarker.dev/sessions")
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to load sessions");
+            }
+
+            return response.json();
+        })
         .then(sessions => {
-        sessions.forEach(session => {
-            const formattedDate = new Date(session.startTime).toLocaleString("en-GB", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit"
+
+            sessionTables.innerHTML = "";
+
+            sessions.forEach(session => {
+
+                const formattedDate = new Date(session.startTime).toLocaleString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                });
+
+                const heading = document.createElement("h2");
+                heading.textContent =
+                    "▶ " + session.category + " — " + formattedDate;
+
+                heading.classList.add("session-heading");
+
+                const sessionContent = document.createElement("div");
+                sessionContent.classList.add("session-content", "collapsed");
+
+                heading.addEventListener("click", () => {
+                    sessionContent.classList.toggle("collapsed");
+
+                    if (sessionContent.classList.contains("collapsed")) {
+                        heading.textContent =
+                            "▶ " + session.category + " — " + formattedDate;
+                    } else {
+                        heading.textContent =
+                            "▼ " + session.category + " — " + formattedDate;
+                    }
+                });
+
+                const table = document.createElement("table");
+
+                const tableHead = document.createElement("thead");
+                const headerRow = document.createElement("tr");
+
+                const headers = ["Solve", "Time", "Timestamp", "Scramble"];
+
+                headers.forEach(header => {
+                    const cell = document.createElement("th");
+                    cell.textContent = header;
+                    headerRow.appendChild(cell);
+                });
+
+                tableHead.appendChild(headerRow);
+                table.appendChild(tableHead);
+
+                const tableBody = document.createElement("tbody");
+
+                session.solves.forEach(solve => {
+
+                    const row = document.createElement("tr");
+
+                    const date = new Date(solve.timestamp);
+
+                    const formattedSolveDate = date.toLocaleString("en-GB", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit"
+                    });
+
+                    const idCell = document.createElement("td");
+                    const timeCell = document.createElement("td");
+                    const timestampCell = document.createElement("td");
+                    const scrambleCell = document.createElement("td");
+
+                    const moves = solve.scramble.split(" ");
+                    const shortScramble = moves.slice(0, 4).join(" ") + "...";
+
+                    idCell.textContent = solve.id;
+                    timeCell.textContent = solve.time;
+                    timestampCell.textContent = formattedSolveDate;
+                    scrambleCell.textContent = shortScramble;
+
+                    scrambleCell.classList.add("scramble");
+
+                    scrambleCell.addEventListener("click", () => {
+                        if (scrambleCell.textContent === shortScramble) {
+                            scrambleCell.textContent = solve.scramble;
+                        } else {
+                            scrambleCell.textContent = shortScramble;
+                        }
+                    });
+
+                    row.appendChild(idCell);
+                    row.appendChild(timeCell);
+                    row.appendChild(timestampCell);
+                    row.appendChild(scrambleCell);
+
+                    tableBody.appendChild(row);
+                });
+
+                table.appendChild(tableBody);
+
+                sessionContent.appendChild(table);
+
+                sessionTables.appendChild(heading);
+                sessionTables.appendChild(sessionContent);
             });
         })
         .catch(error => {
