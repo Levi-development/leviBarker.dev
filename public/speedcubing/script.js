@@ -24,7 +24,15 @@ function loadSolves() {
     fetch("https://api.levibarker.dev/sessions")
         .then(response => response.json())
         .then(sessions => {
-            console.log(sessions);
+        sessions.forEach(session => {
+            const formattedDate = new Date(session.startTime).toLocaleString("en-GB", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit"
+            });
         })
         .catch(error => {
             console.error("Error loading sessions:", error);
