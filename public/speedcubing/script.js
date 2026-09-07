@@ -44,9 +44,15 @@ function loadSolves() {
                     second: "2-digit"
                 });
 
+                const solveCount = session.solves.length;
+
                 const heading = document.createElement("h2");
+
                 heading.textContent =
-                    "▶ " + session.category + " — " + formattedDate;
+                    "▶ " + session.category +
+                    " — " + formattedDate +
+                    " — " + solveCount +
+                    (solveCount === 1 ? " solve" : " solves");
 
                 heading.classList.add("session-heading");
 
@@ -54,14 +60,21 @@ function loadSolves() {
                 sessionContent.classList.add("session-content", "collapsed");
 
                 heading.addEventListener("click", () => {
+
                     sessionContent.classList.toggle("collapsed");
 
                     if (sessionContent.classList.contains("collapsed")) {
                         heading.textContent =
-                            "▶ " + session.category + " — " + formattedDate;
+                            "▶ " + session.category +
+                            " — " + formattedDate +
+                            " — " + solveCount +
+                            (solveCount === 1 ? " solve" : " solves");
                     } else {
                         heading.textContent =
-                            "▼ " + session.category + " — " + formattedDate;
+                            "▼ " + session.category +
+                            " — " + formattedDate +
+                            " — " + solveCount +
+                            (solveCount === 1 ? " solve" : " solves");
                     }
                 });
 
@@ -87,9 +100,9 @@ function loadSolves() {
 
                     const row = document.createElement("tr");
 
-                    const date = new Date(solve.timestamp);
-
-                    const formattedSolveDate = date.toLocaleString("en-GB", {
+                    const formattedSolveDate = new Date(
+                        solve.timestamp
+                    ).toLocaleString("en-GB", {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
@@ -104,7 +117,8 @@ function loadSolves() {
                     const scrambleCell = document.createElement("td");
 
                     const moves = solve.scramble.split(" ");
-                    const shortScramble = moves.slice(0, 4).join(" ") + "...";
+                    const shortScramble =
+                        moves.slice(0, 4).join(" ") + "...";
 
                     idCell.textContent = solve.id;
                     timeCell.textContent = solve.time;
