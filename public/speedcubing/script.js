@@ -21,6 +21,15 @@ function loadSolves() {
     solveTables.innerHTML = "";
     dashboardGraphs.innerHTML = "";
 
+    fetch("https://api.levibarker.dev/sessions")
+        .then(response => response.json())
+        .then(sessions => {
+            console.log(sessions);
+        })
+        .catch(error => {
+            console.error("Error loading sessions:", error);
+        });
+
     fetch("https://api.levibarker.dev/solves")
         .then(response => {
             if (!response.ok) {
