@@ -119,6 +119,11 @@ function loadSolves() {
                     const scrambleCell = document.createElement("td");
                     const videoCell = document.createElement("td");
 
+                    idCell.textContent = solve.id;
+                    timeCell.textContent = solve.time;
+                    timestampCell.textContent = formattedSolveDate;
+                    scrambleCell.textContent = solve.scramble;
+
                     const videoButton = document.createElement("button");
                     videoButton.textContent = "▶";
 
@@ -149,7 +154,7 @@ function loadSolves() {
                         player.height = "180";
 
                         const startTime = solve.videoTimestamp;
-                        const endTime = startTime + solve.videoDuration;
+                        const endTime = startTime + solve.time + 1;
 
                         player.src =
                             `https://www.youtube.com/embed/${session.youtubeVideoID}` +
