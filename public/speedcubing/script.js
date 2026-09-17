@@ -5,6 +5,12 @@ const refreshButton = document.getElementById("refreshButton");
 
 const dashboardGraphs = document.getElementById("dashboardGraphs");
 
+let youtubeAPIReady = false;
+
+function onYouTubeIframeAPIReady() {
+    youtubeAPIReady = true;
+}
+
 function calculateAverage(times) {
     const sorted = [...times].sort((a, b) => a - b);
 
@@ -126,15 +132,14 @@ function loadSolves() {
                     scrambleCell.textContent = solve.scramble;
 
 
-                     // Video preview
+                    // Video preview
 
-                    const videoPreview = document.createElement("div");
-                    videoPreview.classList.add("solve-video-preview");
+                    const preview = document.createElement("div");
+                    preview.classList.add("solve-video-preview");
 
                     const thumbnail = document.createElement("img");
 
                     thumbnail.classList.add("solve-video-thumbnail");
-
                     thumbnail.src =
                         `https://img.youtube.com/vi/${session.youtubeVideoID}/mqdefault.jpg`;
 
@@ -144,110 +149,94 @@ function loadSolves() {
                     playButton.classList.add("solve-video-play");
                     playButton.textContent = "▶";
 
-                    videoPreview.appendChild(thumbnail);
-                    videoPreview.appendChild(playButton);
+                    preview.appendChild(thumbnail);
+                    preview.appendChild(playButton);
 
-                    videoCell.appendChild(videoPreview);
+                    videoCell.appendChild(preview);
 
 
-                    // Hidden YouTube player
+                    // Create player when preview is clicked
 
-                    const playerContainer = document.createElement("div");
-                    playerContainer.classList.add("youtube-player-hidden");
+                    preview.addEventListener("click", () => {
 
-                    const playerID = "youtube-player-" + solve.id;
-                    playerContainer.id = playerID;
+                        if (!youtubeAPIReady) {
+                            console.log("YouTube API is not ready yet");
+                            return;
+                        }
 
-                    videoCell.appendChild(playerContainer);
+                        const playerContainer = document.createElement("div");
+                        playerContainer.classList.add("youtube-player-hidden");
 
-                    const startTime = Math.floor(solve.videoTimestamp);
-                    const endTime = Math.ceil(
-                        solve.videoTimestamp + solve.time + 1
-                    );
+                        const playerID = "youtube-player-" + solve.id;
+                        playerContainer.id = playerID;
 
-                    const player = new YT.Player(playerID, {
-                        width: "1",
-                        height: "1",
-                        videoId: session.youtubeVideoID,
+                        preview.replaceWith(playerContainer);
 
-                        playerVars: {
-                            start: startTime,
-                            controls: 0,
-                            modestbranding: 1,
-                            rel: 0,
-                            iv_load_policy: 3
-                        },
+                        const startTime = Math.floor(solve.videoTimestamp);
+                        const endTime = Math.ceil(
+                            solve.videoTimestamp + solve.time + 1
+                        );
 
-                        events: {
+                        const player = new YT.Player(playerID, {
+                            width: "160",
+                            height: "90",
+                            videoId: session.youtubeVideoID,
 
-                            onReady: (event) => {
-                                event.target.seekTo(startTime, true);
+                            playerVars: {
+                                start: startTime,
+                                controls: 0,
+                                modestbranding: 1,
+                                rel: 0,
+                                iv_load_policy: 3,
+                                disablekb: 1
                             },
 
-                            onStateChange: (event) => {
+                            events: {
 
-                                if (event.data === YT.PlayerState.PLAYING) {
+                                onReady: (event) => {
+                                    event.target.seekTo(startTime, true);
+                                    event.target.playVideo();
+                                },
 
-                                    playButton.textContent = "❚❚";
+                                onStateChange: (event) => {
 
-                                    if (playerContainer.checkTime) {
-                                        clearInterval(playerContainer.checkTime);
+                                    if (event.data === YT.PlayerState.PLAYING) {
+
+                                        if (playerContainer.checkTime) {
+                                            clearInterval(playerContainer.checkTime);
+                                        }
+
+                                        playerContainer.checkTime = setInterval(() => {
+
+                                            if (!document.body.contains(playerContainer)) {
+                                                clearInterval(playerContainer.checkTime);
+                                                return;
+                                            }
+
+                                            if (event.target.getCurrentTime() >= endTime) {
+
+                                                event.target.pauseVideo();
+                                                event.target.seekTo(startTime, true);
+
+                                                clearInterval(playerContainer.checkTime);
+                                                playerContainer.checkTime = null;
+                                            }
+
+                                        }, 100);
                                     }
 
-                                    playerContainer.checkTime = setInterval(() => {
-
-                                        if (!document.body.contains(playerContainer)) {
-                                            clearInterval(playerContainer.checkTime);
-                                            return;
-                                        }
-
-                                        if (event.target.getCurrentTime() >= endTime) {
-
-                                            event.target.pauseVideo();
-                                            event.target.seekTo(startTime, true);
-
+                                    if (
+                                        event.data === YT.PlayerState.PAUSED ||
+                                        event.data === YT.PlayerState.ENDED
+                                    ) {
+                                        if (playerContainer.checkTime) {
                                             clearInterval(playerContainer.checkTime);
                                             playerContainer.checkTime = null;
-
-                                            playButton.textContent = "▶";
                                         }
-
-                                    }, 100);
-                                }
-
-                                if (
-                                    event.data === YT.PlayerState.PAUSED ||
-                                    event.data === YT.PlayerState.ENDED
-                                ) {
-
-                                    playButton.textContent = "▶";
-
-                                    if (playerContainer.checkTime) {
-                                        clearInterval(playerContainer.checkTime);
-                                        playerContainer.checkTime = null;
                                     }
                                 }
                             }
-                        }
-                    });
-
-
-                    // Custom play button
-
-                    videoPreview.addEventListener("click", () => {
-
-                        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-
-                            player.pauseVideo();
-                            playButton.textContent = "▶";
-
-                        } else {
-
-                            player.seekTo(startTime, true);
-                            player.playVideo();
-
-                            playButton.textContent = "❚❚";
-                        }
+                        });
                     });
 
 
