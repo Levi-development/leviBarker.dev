@@ -48,6 +48,8 @@ function loadSolves() {
 
                 const heading = document.createElement("h2");
 
+
+
                 heading.textContent =
                     "▶ " + session.category +
                     " — " + formattedDate +
@@ -83,7 +85,7 @@ function loadSolves() {
                 const tableHead = document.createElement("thead");
                 const headerRow = document.createElement("tr");
 
-                const headers = ["Solve", "Time", "Timestamp", "Scramble"];
+                const headers = ["Solve", "Time", "Timestamp", "Scramble", "Video"];;
 
                 headers.forEach(header => {
                     const cell = document.createElement("th");
@@ -115,30 +117,50 @@ function loadSolves() {
                     const timeCell = document.createElement("td");
                     const timestampCell = document.createElement("td");
                     const scrambleCell = document.createElement("td");
+                    const videoCell = document.createElement("td");
 
-                    const moves = solve.scramble.split(" ");
-                    const shortScramble =
-                        moves.slice(0, 4).join(" ") + "...";
+                    const videoButton = document.createElement("button");
+                    videoButton.textContent = "▶";
 
-                    idCell.textContent = solve.id;
-                    timeCell.textContent = solve.time;
-                    timestampCell.textContent = formattedSolveDate;
-                    scrambleCell.textContent = shortScramble;
+                    videoButton.addEventListener("click", (event) => {
+                        event.stopPropagation();
 
-                    scrambleCell.classList.add("scramble");
+                        const existingPlayer = row.querySelector(".solve-video");
 
-                    scrambleCell.addEventListener("click", () => {
-                        if (scrambleCell.textContent === shortScramble) {
-                            scrambleCell.textContent = solve.scramble;
-                        } else {
-                            scrambleCell.textContent = shortScramble;
+                        if (existingPlayer) {
+                            existingPlayer.remove();
+                            return;
                         }
+
+                        const player = document.createElement("iframe");
+
+                        player.classList.add("solve-video");
+
+                        player.width = "320";
+                        player.height = "180";
+
+                        player.src =
+                            `https://www.youtube.com/embed/${session.youtubeVideoID}` +
+                            `?start=${Math.floor(solve.videoTimestamp)}`;
+
+                        player.title = "Solve video";
+                        player.frameBorder = "0";
+
+                        player.allow =
+                            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+
+                        player.allowFullscreen = true;
+
+                        videoCell.appendChild(player);
                     });
+
+                    videoCell.appendChild(videoButton);
 
                     row.appendChild(idCell);
                     row.appendChild(timeCell);
                     row.appendChild(timestampCell);
                     row.appendChild(scrambleCell);
+                    row.appendChild(videoCell);
 
                     tableBody.appendChild(row);
                 });
