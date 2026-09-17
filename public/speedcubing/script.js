@@ -1,5 +1,6 @@
 const status = document.getElementById("solveStatus");
 const solveTables = document.getElementById("solveTables");
+const sessionTables = document.getElementById("sessionTables");
 const refreshButton = document.getElementById("refreshButton");
 
 const dashboardGraphs = document.getElementById("dashboardGraphs");
@@ -124,18 +125,8 @@ function loadSolves() {
                     timestampCell.textContent = formattedSolveDate;
                     scrambleCell.textContent = solve.scramble;
 
-                    const playerContainer = document.createElement("div");
-                    playerContainer.classList.add("solve-video");
 
-                    const playerID = "youtube-player-" + solve.id;
-                    playerContainer.id = playerID;
-
-                    const startTime = Math.floor(solve.videoTimestamp);
-                    const endTime = Math.ceil(
-                        solve.videoTimestamp + solve.time + 1
-                    );
-
-                    const videoCell = document.createElement("td");
+                    // Video thumbnail
 
                     const thumbnail = document.createElement("img");
 
@@ -149,9 +140,10 @@ function loadSolves() {
                     thumbnail.width = 160;
                     thumbnail.height = 90;
 
-                    thumbnail.style.cursor = "pointer";
-
                     videoCell.appendChild(thumbnail);
+
+
+                    // Create player when thumbnail is clicked
 
                     thumbnail.addEventListener("click", () => {
 
@@ -181,6 +173,7 @@ function loadSolves() {
                             },
 
                             events: {
+
                                 onReady: (event) => {
                                     event.target.seekTo(startTime, true);
                                     event.target.playVideo();
@@ -227,7 +220,6 @@ function loadSolves() {
                         });
                     });
 
-                    videoCell.appendChild(videoButton);
 
                     row.appendChild(idCell);
                     row.appendChild(timeCell);
