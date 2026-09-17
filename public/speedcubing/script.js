@@ -126,7 +126,10 @@ function loadSolves() {
                     scrambleCell.textContent = solve.scramble;
 
 
-                    // Video thumbnail
+                     // Video preview
+
+                    const videoPreview = document.createElement("div");
+                    videoPreview.classList.add("solve-video-preview");
 
                     const thumbnail = document.createElement("img");
 
@@ -137,87 +140,114 @@ function loadSolves() {
 
                     thumbnail.alt = "Play solve video";
 
-                    thumbnail.width = 160;
-                    thumbnail.height = 90;
+                    const playButton = document.createElement("div");
+                    playButton.classList.add("solve-video-play");
+                    playButton.textContent = "▶";
 
-                    videoCell.appendChild(thumbnail);
+                    videoPreview.appendChild(thumbnail);
+                    videoPreview.appendChild(playButton);
+
+                    videoCell.appendChild(videoPreview);
 
 
-                    // Create player when thumbnail is clicked
+                    // Hidden YouTube player
 
-                    thumbnail.addEventListener("click", () => {
+                    const playerContainer = document.createElement("div");
+                    playerContainer.classList.add("youtube-player-hidden");
 
-                        const playerContainer = document.createElement("div");
-                        playerContainer.classList.add("solve-video");
+                    const playerID = "youtube-player-" + solve.id;
+                    playerContainer.id = playerID;
 
-                        const playerID = "youtube-player-" + solve.id;
-                        playerContainer.id = playerID;
+                    videoCell.appendChild(playerContainer);
 
-                        thumbnail.replaceWith(playerContainer);
+                    const startTime = Math.floor(solve.videoTimestamp);
+                    const endTime = Math.ceil(
+                        solve.videoTimestamp + solve.time + 1
+                    );
 
-                        const startTime = Math.floor(solve.videoTimestamp);
-                        const endTime = Math.ceil(
-                            solve.videoTimestamp + solve.time + 1
-                        );
+                    const player = new YT.Player(playerID, {
+                        width: "1",
+                        height: "1",
+                        videoId: session.youtubeVideoID,
 
-                        const player = new YT.Player(playerID, {
-                            width: "160",
-                            height: "90",
-                            videoId: session.youtubeVideoID,
+                        playerVars: {
+                            start: startTime,
+                            controls: 0,
+                            modestbranding: 1,
+                            rel: 0,
+                            iv_load_policy: 3
+                        },
 
-                            playerVars: {
-                                start: startTime,
-                                controls: 1,
-                                modestbranding: 1,
-                                rel: 0
+                        events: {
+
+                            onReady: (event) => {
+                                event.target.seekTo(startTime, true);
                             },
 
-                            events: {
+                            onStateChange: (event) => {
 
-                                onReady: (event) => {
-                                    event.target.seekTo(startTime, true);
-                                    event.target.playVideo();
-                                },
+                                if (event.data === YT.PlayerState.PLAYING) {
 
-                                onStateChange: (event) => {
+                                    playButton.textContent = "❚❚";
 
-                                    if (event.data === YT.PlayerState.PLAYING) {
-
-                                        if (playerContainer.checkTime) {
-                                            clearInterval(playerContainer.checkTime);
-                                        }
-
-                                        playerContainer.checkTime = setInterval(() => {
-
-                                            if (!document.body.contains(playerContainer)) {
-                                                clearInterval(playerContainer.checkTime);
-                                                return;
-                                            }
-
-                                            if (event.target.getCurrentTime() >= endTime) {
-
-                                                event.target.pauseVideo();
-                                                event.target.seekTo(startTime, true);
-
-                                                clearInterval(playerContainer.checkTime);
-                                                playerContainer.checkTime = null;
-                                            }
-
-                                        }, 100);
+                                    if (playerContainer.checkTime) {
+                                        clearInterval(playerContainer.checkTime);
                                     }
 
-                                    if (
-                                        event.data === YT.PlayerState.PAUSED ||
-                                        event.data === YT.PlayerState.ENDED
-                                    ) {
-                                        if (playerContainer.checkTime) {
+                                    playerContainer.checkTime = setInterval(() => {
+
+                                        if (!document.body.contains(playerContainer)) {
+                                            clearInterval(playerContainer.checkTime);
+                                            return;
+                                        }
+
+                                        if (event.target.getCurrentTime() >= endTime) {
+
+                                            event.target.pauseVideo();
+                                            event.target.seekTo(startTime, true);
+
                                             clearInterval(playerContainer.checkTime);
                                             playerContainer.checkTime = null;
+
+                                            playButton.textContent = "▶";
                                         }
+
+                                    }, 100);
+                                }
+
+                                if (
+                                    event.data === YT.PlayerState.PAUSED ||
+                                    event.data === YT.PlayerState.ENDED
+                                ) {
+
+                                    playButton.textContent = "▶";
+
+                                    if (playerContainer.checkTime) {
+                                        clearInterval(playerContainer.checkTime);
+                                        playerContainer.checkTime = null;
                                     }
                                 }
                             }
-                        });
+                        }
+                    });
+
+
+                    // Custom play button
+
+                    videoPreview.addEventListener("click", () => {
+
+                        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+
+                            player.pauseVideo();
+                            playButton.textContent = "▶";
+
+                        } else {
+
+                            player.seekTo(startTime, true);
+                            player.playVideo();
+
+                            playButton.textContent = "❚❚";
+                        }
                     });
 
 
