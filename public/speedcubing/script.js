@@ -130,7 +130,6 @@ function loadSolves() {
                     videoButton.addEventListener("click", (event) => {
                         event.stopPropagation();
 
-                        // If player already exists, remove it
                         const existingPlayer = videoCell.querySelector(".solve-video");
 
                         if (existingPlayer) {
@@ -204,6 +203,7 @@ function loadSolves() {
 
                         videoButton.textContent = "▼";
                     });
+
 
                     videoCell.appendChild(videoButton);
 
