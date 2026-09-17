@@ -5,12 +5,6 @@ const refreshButton = document.getElementById("refreshButton");
 
 const dashboardGraphs = document.getElementById("dashboardGraphs");
 
-let youtubeAPIReady = false;
-
-function onYouTubeIframeAPIReady() {
-    youtubeAPIReady = true;
-}
-
 function calculateAverage(times) {
     const sorted = [...times].sort((a, b) => a - b);
 
@@ -159,8 +153,8 @@ function loadSolves() {
 
                     preview.addEventListener("click", () => {
 
-                        if (!youtubeAPIReady) {
-                            console.log("YouTube API is not ready yet");
+                        if (typeof YT === "undefined") {
+                            console.log("YouTube API has not loaded yet");
                             return;
                         }
 
