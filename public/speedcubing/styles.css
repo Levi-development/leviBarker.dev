@@ -145,4 +145,13 @@ a {
 
 .solve-video {
     max-width: 100%;
+    width: 160px;
+    height: 90px;
+    margin: 0 auto;
+}
+
+}
+
+.solve-video iframe {
+    display: block;
 }

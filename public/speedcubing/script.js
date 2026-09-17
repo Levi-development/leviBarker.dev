@@ -124,84 +124,69 @@ function loadSolves() {
                     timestampCell.textContent = formattedSolveDate;
                     scrambleCell.textContent = solve.scramble;
 
-                    const videoButton = document.createElement("button");
-                    videoButton.textContent = "▶";
+                    const playerContainer = document.createElement("div");
+                    playerContainer.classList.add("solve-video");
 
-                    videoButton.addEventListener("click", (event) => {
-                        event.stopPropagation();
+                    const playerID = "youtube-player-" + solve.id;
+                    playerContainer.id = playerID;
 
-                        const existingPlayer = videoCell.querySelector(".solve-video");
+                    videoCell.appendChild(playerContainer);
 
-                        if (existingPlayer) {
-                            existingPlayer.remove();
-                            videoButton.textContent = "▶";
-                            return;
-                        }
+                    const startTime = Math.floor(solve.videoTimestamp);
+                    const endTime = Math.ceil(
+                        solve.videoTimestamp + solve.time + 1
+                    );
 
-                        const playerContainer = document.createElement("div");
-                        playerContainer.classList.add("solve-video");
+                    const player = new YT.Player(playerID, {
+                        width: "160",
+                        height: "90",
+                        videoId: session.youtubeVideoID,
 
-                        const playerID = "youtube-player-" + solve.id;
-                        playerContainer.id = playerID;
+                        playerVars: {
+                            start: startTime,
+                            controls: 1,
+                            modestbranding: 1,
+                            rel: 0
+                        },
 
-                        videoCell.appendChild(playerContainer);
-
-                        const startTime = Math.floor(solve.videoTimestamp);
-                        const endTime = Math.ceil(
-                            solve.videoTimestamp + solve.time + 1
-                        );
-
-                        const player = new YT.Player(playerID, {
-                            width: "320",
-                            height: "180",
-                            videoId: session.youtubeVideoID,
-
-                            playerVars: {
-                                start: startTime
+                        events: {
+                            onReady: (event) => {
+                                event.target.seekTo(startTime, true);
                             },
 
-                            events: {
-                                onReady: (event) => {
-                                    event.target.seekTo(startTime, true);
-                                    event.target.playVideo();
-                                },
-
-                                onStateChange: (event) => {
-                                    if (event.data === YT.PlayerState.PLAYING) {
-                                        if (playerContainer.checkTime) {
-                                            clearInterval(playerContainer.checkTime);
-                                        }
-
-                                        playerContainer.checkTime = setInterval(() => {
-                                            if (!document.body.contains(playerContainer)) {
-                                                clearInterval(playerContainer.checkTime);
-                                                return;
-                                            }
-
-                                            if (event.target.getCurrentTime() >= endTime) {
-                                                event.target.pauseVideo();
-                                                event.target.seekTo(startTime, true);
-
-                                                clearInterval(playerContainer.checkTime);
-                                                playerContainer.checkTime = null;
-                                            }
-                                        }, 100);
+                            onStateChange: (event) => {
+                                if (event.data === YT.PlayerState.PLAYING) {
+                                    if (playerContainer.checkTime) {
+                                        clearInterval(playerContainer.checkTime);
                                     }
 
-                                    if (
-                                        event.data === YT.PlayerState.PAUSED ||
-                                        event.data === YT.PlayerState.ENDED
-                                    ) {
-                                        if (playerContainer.checkTime) {
+                                    playerContainer.checkTime = setInterval(() => {
+                                        if (!document.body.contains(playerContainer)) {
+                                            clearInterval(playerContainer.checkTime);
+                                            return;
+                                        }
+
+                                        if (event.target.getCurrentTime() >= endTime) {
+                                            event.target.pauseVideo();
+                                            event.target.seekTo(startTime, true);
+
                                             clearInterval(playerContainer.checkTime);
                                             playerContainer.checkTime = null;
                                         }
+                                    }, 100);
+                                }
+
+                                if (
+                                    event.data === YT.PlayerState.PAUSED ||
+                                    event.data === YT.PlayerState.ENDED
+                                ) {
+                                    if (playerContainer.checkTime) {
+                                        clearInterval(playerContainer.checkTime);
+                                        playerContainer.checkTime = null;
                                     }
                                 }
                             }
-                        });
-
-                        videoButton.textContent = "▼";
+                        }
                     });
 
 
