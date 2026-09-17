@@ -193,6 +193,5 @@ a {
 .youtube-player-hidden {
     width: 160px;
     height: 90px;
-    opacity: 0;
     overflow: hidden;
 }

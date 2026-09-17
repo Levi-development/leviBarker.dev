@@ -192,7 +192,6 @@ function loadSolves() {
                             },
 
                             events: {
-
                                 onReady: (event) => {
                                     event.target.seekTo(startTime, true);
                                     event.target.playVideo();
@@ -208,13 +207,9 @@ function loadSolves() {
 
                                         playerContainer.checkTime = setInterval(() => {
 
-                                            if (!document.body.contains(playerContainer)) {
-                                                clearInterval(playerContainer.checkTime);
-                                                return;
-                                            }
-
-                                            if (event.target.getCurrentTime() >= endTime) {
-
+                                            if (
+                                                event.target.getCurrentTime() >= endTime
+                                            ) {
                                                 event.target.pauseVideo();
                                                 event.target.seekTo(startTime, true);
 
