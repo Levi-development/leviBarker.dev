@@ -135,3 +135,12 @@ a {
 .session-content.collapsed {
     display: none;
 }
+
+.video-row td {
+    text-align: center;
+    padding: 10px;
+}
+
+.solve-video {
+    max-width: 100%;
+}

@@ -125,12 +125,21 @@ function loadSolves() {
                     videoButton.addEventListener("click", (event) => {
                         event.stopPropagation();
 
-                        const existingPlayer = row.querySelector(".solve-video");
+                        const existingVideoRow = row.nextElementSibling;
 
-                        if (existingPlayer) {
-                            existingPlayer.remove();
+                        if (
+                            existingVideoRow &&
+                            existingVideoRow.classList.contains("video-row")
+                        ) {
+                            existingVideoRow.remove();
                             return;
                         }
+
+                        const videoRow = document.createElement("tr");
+                        videoRow.classList.add("video-row");
+
+                        const videoCell = document.createElement("td");
+                        videoCell.colSpan = 5;
 
                         const player = document.createElement("iframe");
 
@@ -152,6 +161,9 @@ function loadSolves() {
                         player.allowFullscreen = true;
 
                         videoCell.appendChild(player);
+                        videoRow.appendChild(videoCell);
+
+                        row.after(videoRow);
                     });
 
                     videoCell.appendChild(videoButton);
