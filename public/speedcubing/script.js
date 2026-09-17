@@ -146,33 +146,56 @@ function loadSolves() {
                         const videoCell = document.createElement("td");
                         videoCell.colSpan = 5;
 
-                        const player = document.createElement("iframe");
+                        const playerContainer = document.createElement("div");
 
-                        player.classList.add("solve-video");
+                        playerContainer.classList.add("solve-video");
 
-                        player.width = "320";
-                        player.height = "180";
+                        const playerID = "youtube-player-" + solve.id;
+                        playerContainer.id = playerID;
 
-                        const startTime = solve.videoTimestamp;
-                        const endTime = startTime + solve.time + 1;
-
-                        player.src =
-                            `https://www.youtube.com/embed/${session.youtubeVideoID}` +
-                            `?start=${Math.floor(startTime)}` +
-                            `&end=${Math.ceil(endTime)}`;
-
-                        player.title = "Solve video";
-                        player.frameBorder = "0";
-
-                        player.allow =
-                            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-
-                        player.allowFullscreen = true;
-
-                        videoCell.appendChild(player);
+                        videoCell.appendChild(playerContainer);
                         videoRow.appendChild(videoCell);
 
                         row.after(videoRow);
+
+                        const startTime = Math.floor(solve.videoTimestamp);
+                        const endTime = Math.ceil(
+                            solve.videoTimestamp + solve.time + 1
+                        );
+
+                        const player = new YT.Player(playerID, {
+                            width: "320",
+                            height: "180",
+                            videoId: session.youtubeVideoID,
+
+                            playerVars: {
+                                start: startTime
+                            },
+
+                            events: {
+                                onReady: (event) => {
+                                    event.target.seekTo(startTime, true);
+                                    event.target.playVideo();
+                                },
+
+                                onStateChange: (event) => {
+                                    if (event.data === YT.PlayerState.PLAYING) {
+                                        const checkTime = setInterval(() => {
+                                            if (!document.body.contains(playerContainer)) {
+                                                clearInterval(checkTime);
+                                                return;
+                                            }
+
+                                            if (event.target.getCurrentTime() >= endTime) {
+                                                event.target.pauseVideo();
+                                                event.target.seekTo(startTime, true);
+                                                clearInterval(checkTime);
+                                            }
+                                        }, 100);
+                                    }
+                                }
+                            }
+                        });
                     });
 
                     videoCell.appendChild(videoButton);
