@@ -148,9 +148,13 @@ function loadSolves() {
                         player.width = "320";
                         player.height = "180";
 
+                        const startTime = solve.videoTimestamp;
+                        const endTime = startTime + solve.videoDuration;
+
                         player.src =
                             `https://www.youtube.com/embed/${session.youtubeVideoID}` +
-                            `?start=${Math.floor(solve.videoTimestamp)}`;
+                            `?start=${Math.floor(startTime)}` +
+                            `&end=${Math.ceil(endTime)}`;
 
                         player.title = "Solve video";
                         player.frameBorder = "0";
