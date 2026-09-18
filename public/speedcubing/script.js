@@ -180,11 +180,6 @@ function loadSolves() {
                         const playerContainer = document.createElement("div");
                         playerContainer.classList.add("youtube-player-hidden");
 
-                        const playerCover = document.createElement("div");
-                        playerCover.classList.add("youtube-player-cover");
-
-                        playerContainer.appendChild(playerCover);
-
                         const playerID = "youtube-player-" + solve.id;
                         playerContainer.id = playerID;
 
