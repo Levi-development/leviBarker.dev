@@ -46,8 +46,34 @@ a {
 }
 
 #solveTables tbody tr:hover,
+
 #sessionTables tbody tr:hover {
     background-color: rgba(0, 0, 0, 0.08);
+}
+
+#sessionTables {
+    width: 100%;
+}
+
+#sessionTables table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+#sessionTables tbody tr {
+    height: 220px;
+}
+
+#sessionTables th,
+#sessionTables td {
+    padding: 24px 20px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+#sessionTables th {
+    font-weight: bold;
 }
 
 #solveTables .scramble {
@@ -185,8 +211,8 @@ a {
 }
 
 .youtube-player-hidden {
-    width: 160px;
-    height: 90px;
+    width: 320px;
+    height: 180px;
     overflow: visible;
     position: relative;
     z-index: 1;
@@ -199,9 +225,8 @@ a {
 }
 
 .youtube-player-hidden iframe {
-    width: 160px;
-    height: 90px;
-    display: block;
+    width: 320px;
+    height: 180px;
 }
 
 .youtube-player-cover {
@@ -219,8 +244,8 @@ a {
 
 .solve-video {
     display: block;
-    width: 160px;
-    height: 90px;
+    width: 320px;
+    height: 180px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
@@ -228,7 +253,7 @@ a {
 }
 
 .solve-video:hover {
-    transform: scale(1);
+    transform: scale(1.25);
     z-index: 10;
 }
 

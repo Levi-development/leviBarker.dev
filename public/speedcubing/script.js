@@ -196,8 +196,8 @@ function loadSolves() {
                         );
 
                         const player = new YT.Player(playerID, {
-                            width: "160",
-                            height: "90",
+                            width: "320",
+                            height: "180",
                             videoId: session.youtubeVideoID,
 
                             playerVars: {
