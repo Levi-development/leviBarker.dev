@@ -180,6 +180,11 @@ function loadSolves() {
                         const playerContainer = document.createElement("div");
                         playerContainer.classList.add("youtube-player-hidden");
 
+                        const playerCover = document.createElement("div");
+                        playerCover.classList.add("youtube-player-cover");
+
+                        playerContainer.appendChild(playerCover);
+
                         const playerID = "youtube-player-" + solve.id;
                         playerContainer.id = playerID;
 
@@ -196,6 +201,7 @@ function loadSolves() {
                             videoId: session.youtubeVideoID,
 
                             playerVars: {
+                                autoplay: 1,
                                 start: startTime,
                                 controls: 0,
                                 modestbranding: 1,
@@ -215,15 +221,15 @@ function loadSolves() {
 
                                     if (event.data === YT.PlayerState.PLAYING) {
 
+                                        playerCover.remove();
+
                                         if (playerContainer.checkTime) {
                                             clearInterval(playerContainer.checkTime);
                                         }
 
                                         playerContainer.checkTime = setInterval(() => {
 
-                                            if (
-                                                event.target.getCurrentTime() >= endTime
-                                            ) {
+                                            if (event.target.getCurrentTime() >= endTime) {
                                                 event.target.pauseVideo();
                                                 event.target.seekTo(startTime, true);
 

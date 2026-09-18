@@ -201,7 +201,15 @@ a {
 .youtube-player-hidden iframe {
     width: 160px;
     height: 90px;
+    display: block;
     pointer-events: none;
+}
+
+.youtube-player-cover {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #000;
 }
 
 .solve-video {
