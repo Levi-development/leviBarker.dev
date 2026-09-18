@@ -143,12 +143,6 @@ a {
     padding: 10px;
 }
 
-.solve-video {
-    max-width: 100%;
-    width: 160px;
-    height: 90px;
-    margin: 0 auto;
-}
 
 
 .solve-video iframe {
@@ -193,5 +187,33 @@ a {
 .youtube-player-hidden {
     width: 160px;
     height: 90px;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s ease;
+}
+
+.youtube-player-hidden:hover {
+    transform: scale(1.5);
+    z-index: 10;
+}
+
+.youtube-player-hidden iframe {
+    width: 160px;
+    height: 90px;
+}
+
+.solve-video {
+    display: block;
+    width: 160px;
+    height: 90px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s ease;
+}
+
+.solve-video:hover {
+    transform: scale(1.5);
+    z-index: 10;
 }

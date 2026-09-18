@@ -150,7 +150,6 @@ function loadSolves() {
 
 
                     // Create player when preview is clicked
-
                     preview.addEventListener("click", () => {
 
                         if (typeof YT === "undefined") {
@@ -226,6 +225,8 @@ function loadSolves() {
                                 }
                             }
                         });
+
+                        playerContainer.classList.add("solve-video");
                     });
 
 
