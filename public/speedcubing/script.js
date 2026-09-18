@@ -221,8 +221,6 @@ function loadSolves() {
 
                                     if (event.data === YT.PlayerState.PLAYING) {
 
-                                        playerCover.remove();
-
                                         if (playerContainer.checkTime) {
                                             clearInterval(playerContainer.checkTime);
                                         }
