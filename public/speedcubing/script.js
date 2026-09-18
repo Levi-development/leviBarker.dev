@@ -34,6 +34,7 @@ function loadSolves() {
 
             sessionTables.innerHTML = "";
 
+
             sessions.forEach(session => {
 
                 const formattedDate = new Date(session.startTime).toLocaleString("en-GB", {
@@ -99,6 +100,29 @@ function loadSolves() {
 
                 const tableBody = document.createElement("tbody");
 
+                const videoObserver = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (!entry.isIntersecting) {
+                                return;
+                            }
+
+                            const preview = entry.target;
+
+                            if (preview.dataset.loaded === "true") {
+                                return;
+                            }
+
+                            preview.dataset.loaded = "true";
+                            preview.click();
+                        });
+                    },
+                    {
+                        threshold: 0.5
+                    }
+                );
+
+
                 session.solves.forEach(solve => {
 
                     const row = document.createElement("tr");
@@ -139,12 +163,7 @@ function loadSolves() {
 
                     thumbnail.alt = "Play solve video";
 
-                    const playButton = document.createElement("div");
-                    playButton.classList.add("solve-video-play");
-                    playButton.textContent = "▶";
-
                     preview.appendChild(thumbnail);
-                    preview.appendChild(playButton);
 
                     videoCell.appendChild(preview);
                     videoObserver.observe(preview);
@@ -230,28 +249,6 @@ function loadSolves() {
 
                         playerContainer.classList.add("solve-video");
                     });
-
-                    const videoObserver = new IntersectionObserver(
-                        (entries) => {
-                            entries.forEach((entry) => {
-                                if (!entry.isIntersecting) {
-                                    return;
-                                }
-
-                                const preview = entry.target;
-
-                                if (preview.dataset.loaded === "true") {
-                                    return;
-                                }
-
-                                preview.dataset.loaded = "true";
-                                preview.click();
-                            });
-                        },
-                        {
-                            threshold: 0.5
-                        }
-                    );
 
                     row.appendChild(idCell);
                     row.appendChild(timeCell);
