@@ -147,6 +147,7 @@ function loadSolves() {
                     preview.appendChild(playButton);
 
                     videoCell.appendChild(preview);
+                    videoObserver.observe(preview);
 
 
                     // Create player when preview is clicked
@@ -181,15 +182,16 @@ function loadSolves() {
                                 modestbranding: 1,
                                 rel: 0,
                                 iv_load_policy: 3,
-                                disablekb: 1
+                                disablekb: 1,
+                                playsinline: 1
                             },
 
                             events: {
                                 onReady: (event) => {
+                                    event.target.mute();
                                     event.target.seekTo(startTime, true);
                                     event.target.playVideo();
                                 },
-
                                 onStateChange: (event) => {
 
                                     if (event.data === YT.PlayerState.PLAYING) {
@@ -229,6 +231,27 @@ function loadSolves() {
                         playerContainer.classList.add("solve-video");
                     });
 
+                    const videoObserver = new IntersectionObserver(
+                        (entries) => {
+                            entries.forEach((entry) => {
+                                if (!entry.isIntersecting) {
+                                    return;
+                                }
+
+                                const preview = entry.target;
+
+                                if (preview.dataset.loaded === "true") {
+                                    return;
+                                }
+
+                                preview.dataset.loaded = "true";
+                                preview.click();
+                            });
+                        },
+                        {
+                            threshold: 0.5
+                        }
+                    );
 
                     row.appendChild(idCell);
                     row.appendChild(timeCell);
