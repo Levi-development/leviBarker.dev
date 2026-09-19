@@ -232,24 +232,27 @@ a {
 }
 
 .solve-heatmap {
-    margin-bottom: 40px;
+    width: 100%;
+    margin-top: 25px;
 }
 
-.solve-heatmap h2 {
-    margin-bottom: 15px;
+.solve-heatmap h4 {
+    margin-bottom: 12px;
 }
 
 .heatmap-calendar {
     display: flex;
     gap: 4px;
     overflow-x: auto;
-    padding: 5px;
+    width: 100%;
+    padding-bottom: 5px;
 }
 
 .heatmap-week {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    flex-shrink: 0;
 }
 
 .heatmap-cell {
@@ -258,12 +261,10 @@ a {
     border-radius: 2px;
 }
 
-/* No solves */
 .heatmap-cell.level-0 {
     background-color: #ebedf0;
 }
 
-/* Increasing activity */
 .heatmap-cell.level-1 {
     background-color: #c6e48b;
 }
@@ -278,23 +279,6 @@ a {
 
 .heatmap-cell.level-4 {
     background-color: #196127;
-}
-
-.heatmap-legend {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 10px;
-    font-size: 14px;
-}
-
-.heatmap-legend .heatmap-cell {
-    width: 12px;
-    height: 12px;
-}
-
-.heatmap-legend span {
-    margin: 0 5px;
 }
 
 

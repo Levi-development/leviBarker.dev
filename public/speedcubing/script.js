@@ -14,153 +14,127 @@
         return sorted.reduce((sum, time) => sum + time, 0) / sorted.length;
     }
 
-function createSolveHeatmap(solves) {
+    function createSolveHeatmap(solves) {
 
-    const heatmapContainer = document.createElement("div");
-    heatmapContainer.classList.add("solve-heatmap");
+        const heatmapContainer = document.createElement("div");
+        heatmapContainer.classList.add("solve-heatmap");
 
-    const title = document.createElement("h2");
-    title.textContent = "Solves per day";
+        const title = document.createElement("h4");
+        title.textContent = "Solves per day";
 
-    heatmapContainer.appendChild(title);
-
-    const solveCounts = {};
-
-    solves.forEach(solve => {
-
-        const date = new Date(solve.timestamp);
-
-        // Use local date rather than UTC date
-        const dateKey =
-            date.getFullYear() +
-            "-" +
-            String(date.getMonth() + 1).padStart(2, "0") +
-            "-" +
-            String(date.getDate()).padStart(2, "0");
-
-        if (!solveCounts[dateKey]) {
-            solveCounts[dateKey] = 0;
-        }
-
-        solveCounts[dateKey]++;
-    });
+        heatmapContainer.appendChild(title);
 
 
+        const solveCounts = {};
 
-    const maxSolves = Math.max(
-        1,
-        ...Object.values(solveCounts)
-    );
+        solves.forEach(solve => {
 
-    const calendar = document.createElement("div");
-    calendar.classList.add("heatmap-calendar");
-
-    // Last 365 days
-    const today = new Date();
-
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() - 364);
-
-    // Move backwards to the Sunday before the start date
-    startDate.setDate(
-        startDate.getDate() - startDate.getDay()
-    );
-
-    // Move forward until Saturday
-    const endDate = new Date(today);
-    endDate.setDate(
-        endDate.getDate() + (6 - endDate.getDay())
-    );
-
-    let currentDate = new Date(startDate);
-
-    while (currentDate <= endDate) {
-
-        const week = document.createElement("div");
-        week.classList.add("heatmap-week");
-
-        for (let day = 0; day < 7; day++) {
-
-            const cell = document.createElement("div");
-            cell.classList.add("heatmap-cell");
+            const date = new Date(solve.timestamp);
 
             const dateKey =
-                currentDate.getFullYear() +
+                date.getFullYear() +
                 "-" +
-                String(currentDate.getMonth() + 1).padStart(2, "0") +
+                String(date.getMonth() + 1).padStart(2, "0") +
                 "-" +
-                String(currentDate.getDate()).padStart(2, "0");
+                String(date.getDate()).padStart(2, "0");
 
-            const count = solveCounts[dateKey] || 0;
-
-            if (count === 0) {
-                cell.classList.add("level-0");
-            } else if (count <= maxSolves * 0.25) {
-                cell.classList.add("level-1");
-            } else if (count <= maxSolves * 0.5) {
-                cell.classList.add("level-2");
-            } else if (count <= maxSolves * 0.75) {
-                cell.classList.add("level-3");
-            } else {
-                cell.classList.add("level-4");
+            if (!solveCounts[dateKey]) {
+                solveCounts[dateKey] = 0;
             }
 
+            solveCounts[dateKey]++;
+        });
 
-
-            const formattedDate = currentDate.toLocaleDateString(
-                "en-GB",
-                {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                }
-            );
-
-            cell.title =
-                `${formattedDate}: ${count} ` +
-                (count === 1 ? "solve" : "solves");
-
-            week.appendChild(cell);
-
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
-
-        calendar.appendChild(week);
-    }
-
-    heatmapContainer.appendChild(calendar);
-
-
-
-    const legend = document.createElement("div");
-    legend.classList.add("heatmap-legend");
-
-    const less = document.createElement("span");
-    less.textContent = "Less";
-
-    const more = document.createElement("span");
-    more.textContent = "More";
-
-    legend.appendChild(less);
-
-    for (let i = 0; i <= 4; i++) {
-
-        const cell = document.createElement("div");
-
-        cell.classList.add(
-            "heatmap-cell",
-            `level-${i}`
+        const maxSolves = Math.max(
+            1,
+            ...Object.values(solveCounts)
         );
 
-        legend.appendChild(cell);
+
+
+        const calendar = document.createElement("div");
+        calendar.classList.add("heatmap-calendar");
+
+        const today = new Date();
+
+        const startDate = new Date(today);
+        startDate.setDate(today.getDate() - 364);
+
+        // Start on Sunday
+        startDate.setDate(
+            startDate.getDate() - startDate.getDay()
+        );
+
+        const endDate = new Date(today);
+        endDate.setDate(
+            endDate.getDate() + (6 - endDate.getDay())
+        );
+
+        let currentDate = new Date(startDate);
+
+        while (currentDate <= endDate) {
+
+            const week = document.createElement("div");
+            week.classList.add("heatmap-week");
+
+            for (let day = 0; day < 7; day++) {
+
+                const cell = document.createElement("div");
+                cell.classList.add("heatmap-cell");
+
+                const dateKey =
+                    currentDate.getFullYear() +
+                    "-" +
+                    String(currentDate.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(currentDate.getDate()).padStart(2, "0");
+
+                const count = solveCounts[dateKey] || 0;
+
+                // Determine colour intensity
+                if (count === 0) {
+                    cell.classList.add("level-0");
+                }
+                else if (count <= maxSolves * 0.25) {
+                    cell.classList.add("level-1");
+                }
+                else if (count <= maxSolves * 0.5) {
+                    cell.classList.add("level-2");
+                }
+                else if (count <= maxSolves * 0.75) {
+                    cell.classList.add("level-3");
+                }
+                else {
+                    cell.classList.add("level-4");
+                }
+
+                const formattedDate = currentDate.toLocaleDateString(
+                    "en-GB",
+                    {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    }
+                );
+
+                cell.title =
+                    `${formattedDate}: ${count} ` +
+                    (count === 1 ? "solve" : "solves");
+
+                week.appendChild(cell);
+
+                currentDate.setDate(
+                    currentDate.getDate() + 1
+                );
+            }
+
+            calendar.appendChild(week);
+        }
+
+        heatmapContainer.appendChild(calendar);
+
+        return heatmapContainer;
     }
-
-    legend.appendChild(more);
-
-    heatmapContainer.appendChild(legend);
-
-    return heatmapContainer;
-}
 
     function loadSolves() {
         status.textContent = "Loading solves...";
@@ -428,8 +402,6 @@ function createSolveHeatmap(solves) {
             })
             .then(solves => {
 
-                const heatmap = createSolveHeatmap(solves);
-                dashboardGraphs.appendChild(heatmap);
 
                 const categories = [...new Set(solves.map(solve => solve.category))];
 
@@ -633,6 +605,9 @@ function createSolveHeatmap(solves) {
                     dashboardCard.appendChild(dashboardHeading);
                     dashboardCard.appendChild(stats);
                     dashboardCard.appendChild(dashboardCanvas);
+
+                    const heatmap = createSolveHeatmap(categorySolves);
+                    dashboardCard.appendChild(heatmap);
 
                     dashboardGraphs.appendChild(dashboardCard);
 
