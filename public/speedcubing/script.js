@@ -14,7 +14,7 @@
         return sorted.reduce((sum, time) => sum + time, 0) / sorted.length;
     }
 
-    function createPBVideo(categorySolves) {
+    function createPBVideo(categorySolves, sessions) {
         const pbSolve = categorySolves.reduce((best, solve) => {
             return solve.time < best.time ? solve : best;
         });
@@ -35,7 +35,11 @@
 
         const iframe = document.createElement("iframe");
 
-        iframe.src = `https://www.youtube.com/embed/${session.youtubeVideoID}?start=${Math.floor(pbSolve.videoTimestamp)}&controls=1&rel=0`;
+        iframe.src =
+            `https://www.youtube.com/embed/${session.youtubeVideoID}` +
+            `?start=${Math.floor(pbSolve.videoTimestamp)}` +
+            `&controls=1&rel=0`;
+
         iframe.title = "Personal best solve";
         iframe.allow = "encrypted-media";
         iframe.allowFullscreen = true;
@@ -185,7 +189,7 @@
 
                 return response.json();
             })
-            .then(sessions => {
+            .then(sessionData => {
                 sessions = sessionData;
 
                 sessionTables.innerHTML = "";
@@ -643,7 +647,7 @@
                     const heatmap = createSolveHeatmap(categorySolves);
                     dashboardCard.appendChild(heatmap);
 
-                    const pbVideo = createPBVideo(categorySolves);
+                    const pbVideo = createPBVideo(categorySolves, sessions);
 
                     if (pbVideo) {
                         dashboardCard.appendChild(pbVideo);
