@@ -14,6 +14,38 @@
         return sorted.reduce((sum, time) => sum + time, 0) / sorted.length;
     }
 
+    function createPBVideo(categorySolves) {
+        const pbSolve = categorySolves.reduce((best, solve) => {
+            return solve.time < best.time ? solve : best;
+        });
+
+        const session = sessions.find(session =>
+            session.solves.some(solve => solve.id === pbSolve.id)
+        );
+
+        if (!session || !session.youtubeVideoID) {
+            return null;
+        }
+
+        const container = document.createElement("div");
+        container.classList.add("pb-video");
+
+        const heading = document.createElement("h4");
+        heading.textContent = `PB — ${pbSolve.time.toFixed(2)}s`;
+
+        const iframe = document.createElement("iframe");
+
+        iframe.src = `https://www.youtube.com/embed/${session.youtubeVideoID}?start=${Math.floor(pbSolve.videoTimestamp)}&controls=1&rel=0`;
+        iframe.title = "Personal best solve";
+        iframe.allow = "encrypted-media";
+        iframe.allowFullscreen = true;
+
+        container.appendChild(heading);
+        container.appendChild(iframe);
+
+        return container;
+    }
+
     function createSolveHeatmap(solves) {
 
         const heatmapContainer = document.createElement("div");
@@ -137,6 +169,7 @@
     }
 
     function loadSolves() {
+        let sessions = [];
         status.textContent = "Loading solves...";
         refreshButton.disabled = true;
 
@@ -153,6 +186,7 @@
                 return response.json();
             })
             .then(sessions => {
+                sessions = sessionData;
 
                 sessionTables.innerHTML = "";
 
@@ -608,6 +642,12 @@
 
                     const heatmap = createSolveHeatmap(categorySolves);
                     dashboardCard.appendChild(heatmap);
+
+                    const pbVideo = createPBVideo(categorySolves);
+
+                    if (pbVideo) {
+                        dashboardCard.appendChild(pbVideo);
+                    }
 
                     dashboardGraphs.appendChild(dashboardCard);
 
