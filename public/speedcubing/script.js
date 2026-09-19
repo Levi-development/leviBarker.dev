@@ -181,14 +181,37 @@
         solveTables.innerHTML = "";
         dashboardGraphs.innerHTML = "";
 
-        fetch("https://api.levibarker.dev/sessions")
-            .then(response => {
+        Promise.all([
+            fetch("https://api.levibarker.dev/sessions").then(response => {
                 if (!response.ok) {
                     throw new Error("Failed to load sessions");
                 }
 
                 return response.json();
+            }),
+
+            fetch("https://api.levibarker.dev/solves").then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to load solves");
+                }
+
+                return response.json();
             })
+        ])
+        .then(([sessionData, solves]) => {
+
+            sessions = sessionData;
+
+            // Everything currently inside your
+            // .then(solves => {
+            // goes here.
+
+        })
+        .catch(error => {
+            console.error(error);
+            status.textContent = "Failed to load solves.";
+            refreshButton.disabled = false;
+        });
             .then(sessionData => {
                 sessions = sessionData;
 
@@ -429,15 +452,6 @@
             .catch(error => {
                 console.error("Error loading sessions:", error);
             });
-
-        fetch("https://api.levibarker.dev/solves")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Failed to load solves");
-                }
-
-                return response.json();
-            })
             .then(solves => {
 
 
