@@ -202,18 +202,6 @@
 
             sessions = sessionData;
 
-            // Everything currently inside your
-            // .then(solves => {
-            // goes here.
-
-        })
-        .catch(error => {
-            console.error(error);
-            status.textContent = "Failed to load solves.";
-            refreshButton.disabled = false;
-        });
-            .then(sessionData => {
-                sessions = sessionData;
 
                 sessionTables.innerHTML = "";
 
@@ -448,12 +436,6 @@
                     sessionTables.appendChild(heading);
                     sessionTables.appendChild(sessionContent);
                 });
-            })
-            .catch(error => {
-                console.error("Error loading sessions:", error);
-            });
-            .then(solves => {
-
 
                 const categories = [...new Set(solves.map(solve => solve.category))];
 
